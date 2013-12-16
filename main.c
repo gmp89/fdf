@@ -6,34 +6,70 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 16:00:08 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/16 17:08:00 by gpetrov          ###   ########.fr       */
+/*   Updated: 2013/12/16 20:25:00 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-int		main()
+void		ft_draw(void *mlx, void *win)
 {
-	void	*mlx;
-	void	*win;
-	int		x;
-	int		y;
+	int	x;
+	int	y;
 
-	mlx = mlx_init();
-	win = mlx_new_window(mlx, 420, 420, "42");
-	sleep(2);
 	y = 100;
-	while (y < 200)
+	while (y <= 200)
 	{
 		x = 100;
-		while (x < 200)
+		while (x <= 200)
 		{
-			mlx_pixel_put(mlx, win, x, y, 0xFF0000);
-			usleep(500);
+			usleep(100);
+			mlx_pixel_put(mlx, win, x, y, 0xFF00FF);
 			x++;
 		}
 		y++;
 	}
-	sleep(5);
+}
+
+int		key_hook(int keycode, t_env *e)
+{
+	ft_putstr("key : ");
+	ft_putnbr(keycode);
+	ft_putchar('\n');
+	if (keycode == 65307)
+		exit(0);
+	return (0);
+}
+
+int		mouse_hook(int button, int x, int y, t_env *e)
+{
+	ft_putstr("mouse: ");
+	ft_putnbr(button);
+	ft_putstr(" (");
+	ft_putnbr(x);
+	ft_putchar(':');
+	ft_putnbr(y);
+	ft_putchar(')');
+	ft_putchar('\n');
+	return (0);
+}
+
+int		expose_hook(t_env *e)
+{
+	ft_draw(e->mlx, e->win);
+	return (0);
+}
+
+int		main()
+{
+	t_env	new;
+
+	new.mlx = mlx_init();
+	new.win = mlx_new_window(new.mlx, 720, 720, "42");
+	mlx_key_hook(new.win, key_hook, &new);
+	mlx_expose_hook(new.win, expose_hook, &new);
+	mlx_mouse_hook(new.win, mouse_hook, &new);
+	ft_draw(new.mlx, new.win);
+	mlx_loop(new.mlx);
 	return (0);
 }

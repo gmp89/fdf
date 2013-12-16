@@ -6,7 +6,7 @@
 #    By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2013/12/16 13:47:03 by gpetrov           #+#    #+#              #
-#    Updated: 2013/12/16 17:40:23 by gpetrov          ###   ########.fr        #
+#    Updated: 2013/12/16 17:54:14 by gpetrov          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -20,7 +20,8 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C libft
-	gcc $(FLAGS) $(SRCS) -o $(NAME) -L /usr/X11/lib -lmlx -lXext -lX11
+	gcc $(FLAGS) $(SRCS) -o $(NAME) -I libft/includes -L libft/ -lft \
+	-L /usr/X11/lib -lmlx -lXext -lX11
 %.o: %.c
 	gcc -c $< -o $@ $(FLAGS) -I$(INC)
 clean:

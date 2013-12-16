@@ -6,7 +6,7 @@
 #    By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2013/12/16 13:47:03 by gpetrov           #+#    #+#              #
-#    Updated: 2013/12/16 17:54:14 by gpetrov          ###   ########.fr        #
+#    Updated: 2013/12/16 21:03:36 by gpetrov          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -14,7 +14,7 @@ NAME	= fdf
 SRCS	= main.c
 OBJS	= ${SRCS:.c=.o}
 INC		= ./
-FLAGS	= -Wall -Wextra -Werror
+FLAGS	= -Wall
 
 all: $(NAME)
 

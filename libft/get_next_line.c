@@ -3,56 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
+/*   By: wbeets <wbeets@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2013/12/05 19:46:54 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/16 15:11:47 by gpetrov          ###   ########.fr       */
+/*   Created: 2013/12/03 15:21:39 by wbeets            #+#    #+#             */
+/*   Updated: 2013/12/17 17:43:04 by wbeets           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		get_next_line(int const fd, char **line)
+int		get_next_line(int const fd, char ** line)
 {
-	static char		*buf;
-	long			ret;
-	int				i;
+	static char		*buf = "";
+	int				ret;
+	char			*str;
 
-	i = 0;
-	while ((buf && buf[i] != 0)
-		|| ((!buf || !buf[i])
-			&& (buf = ft_make_buf(fd, (char *)buf, &ret))))
+	if (!line || fd < 0)
+		return (-1);
+	ret = 1;
+	if (buf[0] == '\0')
+		buf = ft_strnew(0);
+	while (ret > 0)
 	{
-		if (buf[i] == '\n' || (!buf[i] && ret <= BUFF_SIZE))
+		if ((str = ft_strchr(buf, '\n')) != NULL)
 		{
-			if (ret == -1)
-				return (-1);
-			*line = ft_strnew(ft_strlen(buf + 1));
-			*line = ft_strncpy(*line, buf, i);
-			ft_memmove(buf, buf + i + 1, ft_strlen(buf) - i + 1);
-			if (ret == 0)
-				return (0);
+			*str = '\0';
+			*line = ft_strdup(buf);
+			ft_memmove(buf, str + 1, ft_strlen(str + 1) + 1);
 			return (1);
 		}
-		i++;
+		buf = biggerbuf(fd, buf, &ret);
 	}
-	return (0);
+	return (ret);
 }
 
-char	*ft_make_buf(int const fd, char *buf, long *ret)
+char	*biggerbuf(int const fd, char *buf, int *ret)
 {
-	char		*str;
+	char	tmp[BUFF_SIZE + 1];
+	char	*tmp2;
 
-	str = ft_strnew(BUFF_SIZE + 1);
-	if ((*ret = read(fd, str, BUFF_SIZE)))
-	{
-		if (buf == NULL)
-		{
-			buf = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1));
-			buf = ft_strdup(str);
-		}
-		else if (buf != NULL)
-			buf = ft_strjoin(buf, str);
-	}
+	*ret = read(fd, tmp, BUFF_SIZE);
+	tmp[*ret] = '\0';
+	tmp2 = buf;
+	buf = ft_strjoin(buf, tmp);
+	ft_strdel(&tmp2);
 	return (buf);
 }

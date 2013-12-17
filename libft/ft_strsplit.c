@@ -3,69 +3,112 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
+/*   By: niccheva <niccheva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2013/11/22 16:31:22 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/16 14:30:29 by gpetrov          ###   ########.fr       */
+/*   Created: 2013/11/28 12:28:00 by niccheva          #+#    #+#             */
+/*   Updated: 2013/12/17 17:01:21 by wbeets           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
 
-static size_t	ft_nbstr_count(char *s, char c)
+static int	ft_tabsize(char *s, char c)
 {
-	size_t	i;
+	int		size;
+	int		i;
 
 	i = 0;
-	while (*s != '\0')
+	size = 0;
+	while (s[i])
 	{
-		while (*s == c && *s != '\0')
-			s++;
-		if (*s != c && *s != '\0')
+		if (s[i] == c)
 			i++;
-		while (*s != c && *s != '\0')
-			s++;
+		while (s[i] != c && s[i])
+		{
+			size++;
+			i++;
+		}
 	}
-	return (i);
+	return (size);
 }
 
-static size_t	ft_strlenc(char *s, char c)
+static int	ft_len(char *s, char c, int start)
 {
-	size_t	i;
+	int		len;
 
-	i = 0;
-	while (*s && *s != c)
+	len = 0;
+	while (s[start] != c && s[start])
 	{
-		i++;
-		s++;
+		len++;
+		start++;
 	}
-	return (i);
+	return (len);
 }
 
-char			**ft_strsplit(char const *s, char c)
+static char	*ft_createstr(char *s, char *s2, char c, int start)
 {
-	size_t	i;
-	char	*p;
-	char	**strtab;
-	char	**pstrtab;
+	int		i;
 
 	i = 0;
-	p = (char *)s;
-	strtab = (char **)malloc(sizeof(char *) * (ft_nbstr_count(p, c) + 1));
-	if (strtab == NULL)
+	while (s[start] && s[start] != c)
+	{
+		s2[i] = s[start];
+		i++;
+		start++;
+	}
+	s2[i] = '\0';
+	return (s2);
+}
+
+static char	**ft_createtab(char **tab, char *s, char c, int start)
+{
+	int		len;
+	int		i;
+	int		j;
+
+	i = start;
+	j = 0;
+	while (s[i])
+	{
+		len = ft_len(s, c, start);
+		tab[j] = (char *)malloc(sizeof(char) * (len + 1));
+		if (tab[j])
+		{
+			tab[j] = ft_createstr(s, tab[j], c, start);
+			j++;
+			i += ft_len(s, c, start);
+			while (s[i] == c && s[i])
+				i++;
+			start = i;
+		}
+		else
+			return (NULL);
+	}
+	tab[j] = '\0';
+	return (tab);
+}
+
+char		**ft_strsplit(char const *s, char c)
+{
+	char	**tab;
+	int		size;
+	int		i;
+
+	i = 0;
+	if (s)
+	{
+		size = ft_tabsize((char *)s, c);
+		tab = (char **)malloc(sizeof(char *) * (size + 1));
+		i = 0;
+		if (tab)
+		{
+			while (s[i] == c && s[i])
+				i++;
+			tab = ft_createtab(tab, (char *)s, c, i);
+			return (tab);
+		}
 		return (NULL);
-	pstrtab = strtab;
-	while (i < ft_nbstr_count((char *)s, c))
-	{
-		while (*p == c)
-			p++;
-		*pstrtab = ft_strnew(ft_strlenc(p, c) + 1);
-		ft_memcpy(*pstrtab, p, ft_strlenc(p, c));
-		while (*p != c)
-			p++;
-		pstrtab++;
-		i++;
 	}
-	*pstrtab = NULL;
-	return (strtab);
+	return (NULL);
 }

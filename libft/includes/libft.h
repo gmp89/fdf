@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/11/20 19:24:31 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/16 15:12:39 by gpetrov          ###   ########.fr       */
+/*   Updated: 2013/12/17 17:15:45 by wbeets           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,6 @@ void	ft_putendl_fd(char const *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 int		get_next_line(int const fd, char **line);
 char	*ft_make_buf(int const fd, char *buf, long *ret);
+char	*biggerbuf(int const fd, char *buf, int *ret);
 
 #endif

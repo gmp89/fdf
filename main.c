@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 16:00:08 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/16 21:56:09 by gpetrov          ###   ########.fr       */
+/*   Updated: 2013/12/17 17:23:54 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,48 +14,63 @@
 
 void		ft_draw(void *mlx, void *win)
 {
-	int	x;
-	int	y;
+	t_point		grid;
+	t_point		point1;
+	t_point		point2;
 
-	y = 0;
-	while (y <= 720)
+	point1.x = 100;
+	point1.y = 100;
+	point2.x = 320;
+	point2.y = 520;
+	grid.y = 0;
+	while (grid.y <= 720)
 	{
-		x = 0;
-		usleep(250);
-		while (x <= 720)
-		{
-			usleep(250);
-			mlx_pixel_put(mlx, win, x, y, 0x00FF00);
-			x++;
-		}
-		y = y + 50;
+		grid.x = -1;
+		while (++grid.x <= 720)
+			mlx_pixel_put(mlx, win, grid.x, grid.y, 0x00FF00);
+		grid.y = grid.y + 50;
 	}
-	x = 0;
-	while (x <= 720)
+	grid.x = 0;
+	while (grid.x <= 720)
 	{
-		y = 0;
-		usleep(250);
-		while (y <= 720)
-		{
-			mlx_pixel_put(mlx, win, x, y, 0x00FF00);
-			y++;
-		}
-		x = x + 50;
+		grid.y = -1;
+		while (++grid.y <= 720)
+			mlx_pixel_put(mlx, win, grid.x, grid.y, 0x00FF00);
+		grid.x = grid.x + 50;
 	}
+	ft_trace(point1, point2, mlx, win);
+}
 
-	y = 100;
-	while (y <= 200)
+void	ft_trace(t_point point1, t_point point2, void *mlx, void *win)
+{
+	t_delta		delta;
+
+	delta.dx = point2.x - point1.x;
+	delta.dy = point2.y - point1.y;
+	delta.dp = 2 * delta.dy - delta.dx; /* Valeur initiale de dp */
+	delta.deltaE = 2 * delta.dy;
+	delta.deltaNE = 2 * (delta.dy - delta.dx);
+	delta.x = point1.x;
+	delta.y = point1.y;
+	mlx_pixel_put(mlx, win, delta.x, delta.y, 0xFF00FF);
+	while (delta.x < point2.x)
 	{
-		x = 100;
-		while (x <= 200)
+		if (delta.dp <= 0) /* On choisit le point E */
 		{
-			usleep(100);
-			mlx_pixel_put(mlx, win, x, y, 0xFF00FF);
-			x++;
+			delta.dp = delta.dp + delta.deltaE;	/* Nouveau dp */
+			delta.x++;				/* Calcul de x_p+1 */							/* y_p+1 = y_p */
 		}
-		y++;
+		else /* On choisit le point NE */
+		{
+			delta.dp = delta.dp + delta.deltaNE; /* Nouveau dp */
+			delta.x++; /* Calcul de x_p+1 */
+			delta.y++; /* Calcul de y_p+1 */
+		}
+		mlx_pixel_put(mlx, win, delta.x, delta.y, 0xFF00FF);
 	}
 }
+
+
 
 int		key_hook(int keycode, t_env *e)
 {

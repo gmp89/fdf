@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 16:00:08 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/16 20:25:00 by gpetrov          ###   ########.fr       */
+/*   Updated: 2013/12/16 21:56:09 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,32 @@ void		ft_draw(void *mlx, void *win)
 {
 	int	x;
 	int	y;
+
+	y = 0;
+	while (y <= 720)
+	{
+		x = 0;
+		usleep(250);
+		while (x <= 720)
+		{
+			usleep(250);
+			mlx_pixel_put(mlx, win, x, y, 0x00FF00);
+			x++;
+		}
+		y = y + 50;
+	}
+	x = 0;
+	while (x <= 720)
+	{
+		y = 0;
+		usleep(250);
+		while (y <= 720)
+		{
+			mlx_pixel_put(mlx, win, x, y, 0x00FF00);
+			y++;
+		}
+		x = x + 50;
+	}
 
 	y = 100;
 	while (y <= 200)

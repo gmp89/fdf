@@ -6,15 +6,17 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 16:00:08 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/17 17:56:48 by wbeets           ###   ########.fr       */
+/*   Updated: 2013/12/18 15:38:39 by wbeets           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+float sqrt1(const float x);
+#include <stdio.h>
 #include "header.h"
 
-void		ft_draw(void *mlx, void *win)
+void		ft_draw(void *mlx, void *win, int **tab)
 {
-	t_point		grid;
+/*	t_point		grid;
 	t_point		point1;
 	t_point		point2;
 
@@ -36,8 +38,8 @@ void		ft_draw(void *mlx, void *win)
 		while (++grid.y <= 720)
 			mlx_pixel_put(mlx, win, grid.x, grid.y, 0x00FF00);
 		grid.x = grid.x + 50;
-	}
-	ft_trace(point1, point2, mlx, win);
+	}*/
+	ft_draw_all(tab, mlx, win);
 }
 
 void	ft_trace(t_point point1, t_point point2, void *mlx, void *win)
@@ -94,9 +96,9 @@ int		mouse_hook(int button, int x, int y, t_env *e)
 	return (0);
 }
 
-int		expose_hook(t_env *e)
+int		expose_hook(t_env *e, int **tab)
 {
-	ft_draw(e->mlx, e->win);
+	ft_draw(e->mlx, e->win, tab);
 	return (0);
 }
 
@@ -111,7 +113,57 @@ int		main(int argc, char **argv)
 	mlx_key_hook(new.win, key_hook, &new);
 	mlx_expose_hook(new.win, expose_hook, &new);
 	mlx_mouse_hook(new.win, mouse_hook, &new);
-	ft_draw(new.mlx, new.win);
+	ft_draw(new.mlx, new.win, tab);
 	mlx_loop(new.mlx);
 	return (0);
+}
+
+float sqrt1(const float x)
+{
+  union
+  {
+    int i;
+    float x;
+  } u;
+  u.x = x;
+  u.i = (1<<29) + (u.i >> 1) - (1<<22); 
+  
+  // Two Babylonian Steps (simplified from:)
+  // u.x = 0.5f * (u.x + x/u.x);
+  // u.x = 0.5f * (u.x + x/u.x);
+  u.x =       u.x + x/u.x;
+  u.x = 0.25f*u.x + x/u.x;
+
+  return u.x;
+}
+
+void	ft_draw_all(int **tab, void *mlx, void *win)
+{
+	t_point	point1;
+	t_point	point2;
+	float	fi;
+	float	fj;
+	float	fz;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 1;
+	point1.x = 100;
+	point1.y = 10;
+	while (tab[i] != (int *)NULL)
+	{
+		while (j < 10)
+		{
+			fi = i;
+			fj = j;
+			fz = tab[i][j];
+			point2.x = ft_calc_ax(fi, fj, fz);
+			ft_trace(point1, point2, mlx, win);
+			point1 = point2;
+			j++;
+		}
+		j = 1;
+		i++;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 15:57:28 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/17 17:54:10 by wbeets           ###   ########.fr       */
+/*   Updated: 2013/12/18 15:35:03 by wbeets           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# define GRID_SIZE  20
+# define OFFSET_X  100
+# define OFFSET_Y  10
+
 
 typedef struct		s_env
 {
@@ -42,10 +46,15 @@ typedef struct		s_delta
 	int				y;
 }					t_delta;
 
-void	ft_draw(void *mlx, void *win);
+int		ft_calc_ay(float i, float j, float z);
+float	sqrt1(const float x);
+int		ft_calc_ax(float i, float j, float z);
+float	my_pow(float x);
+void	ft_draw(void *mlx, void *win, int **tab);
+void	ft_draw_all(int **tab, void *mlx, void *win);
 int		key_hook(int keycode, t_env *e);
 int		mouse_hook(int button, int x, int y, t_env *e);
-int		expose_hook(t_env *e);
+int		expose_hook(t_env *e, int **tab);
 int		**ft_get_data(int argc, char **argv);
 int		ft_tablen(char **tab);
 int		ft_data_size(char *file);

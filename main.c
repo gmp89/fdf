@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 16:00:08 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/18 15:38:39 by wbeets           ###   ########.fr       */
+/*   Updated: 2013/12/18 20:12:09 by wbeets           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,36 +41,65 @@ void		ft_draw(void *mlx, void *win, int **tab)
 	}*/
 	ft_draw_all(tab, mlx, win);
 }
-
-void	ft_trace(t_point point1, t_point point2, void *mlx, void *win)
+int        ft_abs(int value)
 {
-	t_delta		delta;
-
-	delta.dx = point2.x - point1.x;
-	delta.dy = point2.y - point1.y;
-	delta.dp = 2 * delta.dy - delta.dx; /* Valeur initiale de dp */
-	delta.deltaE = 2 * delta.dy;
-	delta.deltaNE = 2 * (delta.dy - delta.dx);
-	delta.x = point1.x;
-	delta.y = point1.y;
-	mlx_pixel_put(mlx, win, delta.x, delta.y, 0xFF00FF);
-	while (delta.x < point2.x)
-	{
-		if (delta.dp <= 0) /* On choisit le point E */
-		{
-			delta.dp = delta.dp + delta.deltaE;	/* Nouveau dp */
-			delta.x++;				/* Calcul de x_p+1 */							/* y_p+1 = y_p */
-		}
-		else /* On choisit le point NE */
-		{
-			delta.dp = delta.dp + delta.deltaNE; /* Nouveau dp */
-			delta.x++; /* Calcul de x_p+1 */
-			delta.y++; /* Calcul de y_p+1 */
-		}
-		mlx_pixel_put(mlx, win, delta.x, delta.y, 0xFF00FF);
-	}
+    if (value < 0)
+        return (-value);
+    return (value);
 }
 
+void    ft_trace(t_point pt1, t_point pt2, void *mlx, void *win)
+{
+    t_delta        delta;
+
+    delta.dx = ft_abs(pt2.x - pt1.x);
+    delta.x = (pt1.x < pt2.x) ? 1 : -1;
+    delta.dy = ft_abs(pt2.y - pt1.y);
+    delta.y = (pt1.y < pt2.y) ? 1 : -1; 
+    delta.deltaE = (delta.dx > delta.dy) ? delta.dx : -delta.dy;
+    delta.deltaE = delta.deltaE / 2;
+    while (1)
+    {
+        mlx_pixel_put(mlx, win, pt1.x, pt1.y, 0xFF00FF);
+        if (pt1.x == pt2.x && pt1.y == pt2.y)
+            break ;
+        delta.deltaNE = delta.deltaE;
+        if (delta.deltaNE > -delta.dx)
+        {
+            delta.deltaE -= delta.dy;
+            pt1.x += delta.x;
+        }
+        if (delta.deltaNE < delta.dy)
+        {
+            delta.deltaE += delta.dx;
+            pt1.y += delta.y;
+        }
+    }
+}
+//void	ft_trace(t_point point1, t_point point2, void *mlx, void *win)
+//{
+//int dx, sx;
+//    int dy, sy;
+//    int err, e2;
+//    int x0 = point1.x;
+//    int x1 = point2.x;
+//    int y0 = point1.y;
+//    int y1 = point2.y;
+//
+//    dx = abs(x1-x0);
+//    sx = x0<x1 ? 1 : -1;
+//    dy = abs(y1-y0);
+//    sy = y0<y1 ? 1 : -1; 
+//    err = (dx>dy ? dx : -dy)/2;
+//    for(;;){
+//        mlx_pixel_put(mlx, win, x0, y0, 0xFF00FF);
+//        if (x0==x1 && y0==y1) break;
+//        e2 = err;
+//        if (e2 >-dx) { err -= dy; x0 += sx; }
+//        if (e2 < dy) { err += dx; y0 += sy; }
+//    }
+//}
+//
 
 
 int		key_hook(int keycode, t_env *e)
@@ -149,21 +178,73 @@ void	ft_draw_all(int **tab, void *mlx, void *win)
 
 	i = 0;
 	j = 1;
-	point1.x = 100;
-	point1.y = 10;
-	while (tab[i] != (int *)NULL)
+	point1.x = 300;
+	point1.y = 20;
+	while (tab[i] != '\0')
 	{
-		while (j < 10)
+		while (j <= tab[i][0])
 		{
 			fi = i;
 			fj = j;
 			fz = tab[i][j];
 			point2.x = ft_calc_ax(fi, fj, fz);
-			ft_trace(point1, point2, mlx, win);
+			point2.y = ft_calc_ay(fi, fj, fz);
+			ft_putstr(" 1x is ");
+			ft_putnbr(point1.x);
+			ft_putstr("\t 1y is ");
+			ft_putnbr(point1.y);
+			ft_putstr("\t 2x is ");
+			ft_putnbr(point2.x);
+			ft_putstr("\t 2y is ");
+			ft_putnbr(point2.y);
+			ft_putstr("\t j = ");
+			ft_putnbr(j);
+			ft_putstr("\t i = ");
+			ft_putnbr(i);
+			ft_putendl(" ");
+			if (j != 1)
+				ft_trace(point1, point2, mlx, win);
+			usleep(10000);
 			point1 = point2;
 			j++;
 		}
 		j = 1;
 		i++;
 	}
+	i = 0;
+	j = 1;
+
+	ft_putstr("2e boucle");
+	while (j <= tab[i][0])
+	{
+		while (tab[i] != '\0')
+		{
+			fi = i;
+			fj = j;
+			fz = tab[i][j];
+			point2.x = ft_calc_ax(fi, fj, fz);
+			point2.y = ft_calc_ay(fi, fj, fz);
+			ft_putstr(" 1x is ");
+			ft_putnbr(point1.x);
+			ft_putstr("\t 1y is ");
+			ft_putnbr(point1.y);
+			ft_putstr("\t 2x is ");
+			ft_putnbr(point2.x);
+			ft_putstr("\t 2y is ");
+			ft_putnbr(point2.y);
+			ft_putstr("\t j = ");
+			ft_putnbr(j);
+			ft_putstr("\t i = ");
+			ft_putnbr(i);
+			ft_putendl(" ");
+			if (i != 0)
+				ft_trace(point1, point2, mlx, win);
+			usleep(10000);
+			point1 = point2;
+			i++;
+		}
+		i = 0;
+		j++;
+	}
+
 }

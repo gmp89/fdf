@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 15:57:28 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/18 15:35:03 by wbeets           ###   ########.fr       */
+/*   Updated: 2013/12/18 20:26:23 by wbeets           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # define GRID_SIZE  20
-# define OFFSET_X  100
-# define OFFSET_Y  10
+# define OFFSET_X  200
+# define OFFSET_Y  -10
 
 
 typedef struct		s_env

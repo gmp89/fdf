@@ -6,7 +6,7 @@
 /*   By: wbeets <wbeets@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:04:29 by wbeets            #+#    #+#             */
-/*   Updated: 2013/12/17 17:43:20 by wbeets           ###   ########.fr       */
+/*   Updated: 2013/12/18 19:56:04 by wbeets           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int		**ft_get_data(int argc, char **argv)
 	}
 	i = ft_data_size(argv[1]);
 	tab = (int**)malloc((i + 1)* (sizeof(*tab)));
+	tab[i + 1] = '\0';
 	i = 0;
 	fd = open(argv[1], O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
@@ -75,8 +76,9 @@ int		*ft_put_data(char *str)
 	chartab = ft_strsplit(str, ' ');
 	i = ft_tablen(chartab);
 	tab = (int*)malloc(i * (sizeof(*tab)));
-	j = -1;
-	while (++j < i)
-		tab[j] = ft_atoi(chartab[j]);
+	tab[0] = i;
+	j = 0;
+	while (++j <= i)
+		tab[j] = ft_atoi(chartab[j - 1]);
 	return (tab);
 }

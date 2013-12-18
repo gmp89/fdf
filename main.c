@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 16:00:08 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/18 15:38:39 by wbeets           ###   ########.fr       */
+/*   Updated: 2013/12/18 16:38:33 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,29 +16,6 @@ float sqrt1(const float x);
 
 void		ft_draw(void *mlx, void *win, int **tab)
 {
-/*	t_point		grid;
-	t_point		point1;
-	t_point		point2;
-
-	point1.x = 100;
-	point1.y = 100;
-	point2.x = 320;
-	point2.y = 520;
-	grid.y = 0;
-	while (grid.y <= 720)
-	{
-		grid.x = -1;
-		while (++grid.x <= 720)
-			mlx_pixel_put(mlx, win, grid.x, grid.y, 0x00FF00);
-		grid.y = grid.y + 50;
-	}
-	grid.x = 0;
-	while (grid.x <= 720)
-	{
-		while (++grid.y <= 720)
-			mlx_pixel_put(mlx, win, grid.x, grid.y, 0x00FF00);
-		grid.x = grid.x + 50;
-	}*/
 	ft_draw_all(tab, mlx, win);
 }
 
@@ -120,50 +97,39 @@ int		main(int argc, char **argv)
 
 float sqrt1(const float x)
 {
-  union
-  {
-    int i;
-    float x;
-  } u;
-  u.x = x;
-  u.i = (1<<29) + (u.i >> 1) - (1<<22); 
-  
-  // Two Babylonian Steps (simplified from:)
-  // u.x = 0.5f * (u.x + x/u.x);
-  // u.x = 0.5f * (u.x + x/u.x);
-  u.x =       u.x + x/u.x;
-  u.x = 0.25f*u.x + x/u.x;
+	t_union	u;
 
-  return u.x;
+	u.x = x;
+	u.i = (1<<29) + (u.i >> 1) - (1<<22);
+	u.x =       u.x + x/u.x;
+	u.x = 0.25f*u.x + x/u.x;
+
+  return (u.x);
 }
 
 void	ft_draw_all(int **tab, void *mlx, void *win)
 {
-	t_point	point1;
-	t_point	point2;
-	float	fi;
-	float	fj;
-	float	fz;
-	int		i;
-	int		j;
+	t_point			point1;
+	t_point			point2;
+	t_struct_draw_all	draw;
 
-	i = 0;
-	j = 1;
+	draw.i = 0;
+	draw.j = 1;
 	point1.x = 100;
 	point1.y = 10;
-	while (tab[i] != (int *)NULL)
+	while (tab[draw.i] != (int *)NULL)
 	{
-		while (j < 10)
+		while (draw.j < 10)
 		{
-			fi = i;
-			fj = j;
-			fz = tab[i][j];
-			point2.x = ft_calc_ax(fi, fj, fz);
+			draw.fi = draw.i;
+			draw.fj = draw.j;
+			draw.fz = tab[draw.i][draw.j];
+			point2.x = ft_calc_ax(draw.fi, draw.fj, draw.fz);
 			ft_trace(point1, point2, mlx, win);
 			point1 = point2;
-			j++;
+			draw.j++;
 		}
-		j = 1;
-		i++;
+		draw.j = 1;
+		draw.i++;
 	}
 }

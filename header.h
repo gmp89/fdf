@@ -6,7 +6,7 @@
 /*   By: gpetrov <gpetrov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 15:57:28 by gpetrov           #+#    #+#             */
-/*   Updated: 2013/12/18 15:35:03 by wbeets           ###   ########.fr       */
+/*   Updated: 2013/12/18 16:34:18 by gpetrov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,21 @@ typedef struct		s_delta
 	int				x;
 	int				y;
 }					t_delta;
+
+typedef union		u_union
+{
+	int				i;
+	float			x;
+}					t_union;
+
+typedef struct		s_struc
+{
+	float			fi;
+	float			fj;
+	float			fz;
+	int				i;
+	int				j;
+}					t_struct_draw_all;
 
 int		ft_calc_ay(float i, float j, float z);
 float	sqrt1(const float x);
